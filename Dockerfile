@@ -15,7 +15,7 @@ RUN wget https://www.free-css.com/assets/files/free-css-templates/download/page2
     rm -rf carserv carserv.zip
 
 # Expose the default HTTP port
-EXPOSE 80 22
+EXPOSE 80 
 
 # Start Apache in the foreground
 CMD ["apache2ctl", "-D", "FOREGROUND"]
