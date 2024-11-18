@@ -11,8 +11,8 @@ WORKDIR /var/www/html
 # Download and unzip the web template in a single RUN command to reduce image layers
 RUN wget https://www.free-css.com/assets/files/free-css-templates/download/page291/carserv.zip && \
     unzip carserv.zip && \
-    cp -rvf carserv/* . && \
-    rm -rf carserv carserv.zip
+    cp -rvf  car-repair-html-template/* . && \
+    rm -rf car-repair-html-template carserv.zip
 
 # Expose the default HTTP port
 EXPOSE 80 
