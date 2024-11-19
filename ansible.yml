@@ -1,0 +1,19 @@
+---
+- name: Apply Kubernetes Configuration
+  hosts: node
+  become: yes
+  tasks:
+    - name: Create New Deployment
+      command: kubectl apply -f /home/user/Deployment.yml
+      register: result
+      environment:
+        KUBECONFIG: /home/user/.kube/config
+    
+    
+    - name: Create New Service
+        command: kubectl apply -f /home/user/Service.yml
+        register: result
+        environment:
+          KUBECONFIG: /home/user/.kube/config
+     
+
