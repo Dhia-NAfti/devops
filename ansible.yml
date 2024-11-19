@@ -1,9 +1,9 @@
 ---
-- name: Apply Kubernetes Configuration
+- name: Apply Kubernetes Configuration after make change
   hosts: node
   become: yes
   tasks:
-    - name: Create New Deployment
+    - name: Create  and update Deployment
       command: kubectl apply -f /home/user/Deployment.yml
       register: result
       environment:
