@@ -5,13 +5,15 @@
   tasks:
     - name: Create and update Deployment
       command: kubectl apply -f /home/user/Deployment.yml
-      register: result
+      register: deployment_result
       environment:
         KUBECONFIG: /home/user/.kube/config
+      ignore_errors: yes
 
     - name: Create New Service
       command: kubectl apply -f /home/user/Service.yml
-      register: result
+      register: service_result
       environment:
         KUBECONFIG: /home/user/.kube/config
+      ignore_errors: yes
 

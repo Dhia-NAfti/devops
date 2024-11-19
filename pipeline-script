@@ -1,0 +1,45 @@
+node {
+    stage('Pull from github') {
+        git 'https://github.com/Dhia-NAfti/devops.git'
+    }
+    
+    stage('Copy file from Jenkins Server To Ansible & Kubernetes Server') {
+        sh 'scp /var/lib/jenkins/workspace/devops-project/Dockerfile  anibledocker@192.168.233.155:/home/anibledocker'
+
+        sh 'scp /var/lib/jenkins/workspace/devops-project/ansible.yml  anibledocker@192.168.233.155:/home/anibledocker'
+
+        sh 'scp /var/lib/jenkins/workspace/devops-project/Deployment.yml user@192.168.233.156:/home/user'
+
+        sh 'scp /var/lib/jenkins/workspace/devops-project/Service.yml user@192.168.233.156:/home/user'
+
+    }
+    
+    stage('Create Docker Image With Tag') {
+         sh 'ssh anibledocker@192.168.233.155 cd /home/anibledocker '  
+         sh 'ssh anibledocker@192.168.233.155 docker image build -t dhiaf10/$JOB_NAME:v1.$BUILD_ID .'
+         sh 'ssh anibledocker@192.168.233.155 docker image build -t dhiaf10/$JOB_NAME:latest .'
+
+    }
+    
+    stage('Push Image to The Docker Hub ') {
+      withCredentials([string(credentialsId: 'dockerhub_password', variable: 'dockerhub_password')]) {
+         sh 'ssh anibledocker@192.168.233.155 docker login -u dhiaf10 -p ${dockerhub_password}'
+         sh 'ssh anibledocker@192.168.233.155 docker image push dhiaf10/$JOB_NAME:v1.$BUILD_ID'
+         sh 'ssh anibledocker@192.168.233.155 docker image push dhiaf10/$JOB_NAME:latest'
+      }
+    }
+    
+    stage('Docker Logout & Remove Images from Local After Pushing to Docker Hub') {
+         sh 'ssh anibledocker@192.168.233.155 docker image prune -af '
+         sh 'ssh anibledocker@192.168.233.155 docker logout '
+
+    }
+    
+    stage('Execute KBS from Ansible ') {
+         sh 'ssh anibledocker@192.168.233.155 cd /home/anibledocker '
+         sh 'ssh anibledocker@192.168.233.155 ansible-playbook ansible.yml '
+
+    }
+    
+    
+}
